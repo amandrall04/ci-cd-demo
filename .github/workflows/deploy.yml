@@ -1,13 +1,21 @@
-name: Auto Deploy
+name: Auto Deploy to Render
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  notify-render:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Trigger Render Deploy
-        run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+            echo "ERROR: RENDER_DEPLOY_HOOK secret missing"
+            exit 1
+          fi
+
+          echo "Calling Render Deploy Hook..."
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Deploy triggered successfully"
