@@ -1,17 +1,23 @@
-name: Deploy to Render
+name: Render CD
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger deployment
-        env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      - name: Check secret exists
         run: |
-          echo "Triggering Render deploy..."
-          curl -X POST "$RENDER_DEPLOY_HOOK"
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+            echo "SECRET NOT FOUND"
+            exit 1
+          else
+            echo "SECRET FOUND"
+          fi
+
+      - name: Call Render Deploy Hook
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
