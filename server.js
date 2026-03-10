@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-    res.send("<h1>CD Version 3 🚀</h1>");
+    res.send("<h1>CD Version 4 🚀</h1>");
 });
 
 app.get("/health", (req, res) => {
